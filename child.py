@@ -2,6 +2,7 @@ from exceptions import TaskNotFoundError
 from feeling import Feeling
 from task import Task
 
+
 class Child:
     def __init__(self, name: str, age: int, gender: str, parent):
         self.name = name
@@ -30,4 +31,9 @@ class Child:
 
     def get_child_info(self) -> str:
         """Return a formatted string containing child's information."""
-        return f'Name: {self.name}, Age: {self.age}, Gender: {self.gender}'
+        parent_info = f'Parent: {self.parent.username}, Age: {self.parent.age}, Gender: {self.parent.gender}, E-mail: {self.parent.email}'
+        return f"Child info:\n\
+                Name: {self.name}\n\
+                Age: {self.age}\n\
+                Gender: {self.gender}\n\
+                {parent_info}\n"

@@ -18,17 +18,17 @@ class Task:
     def edit_task(self, name: str = None, period: str = None, frequency: str = None,
                   difficulty: str = None, reward: str = None, description: str = None) -> None:
         """Edit task attributes."""
-        if name is not None:
+        if name is not None and name != "":
             self.name = name
-        if period is not None:
+        if period is not None and period != "":
             self.period = period
-        if frequency is not None:
+        if frequency is not None and frequency != "":
             self.frequency = frequency
-        if difficulty is not None:
+        if difficulty is not None and difficulty != "":
             self.difficulty = difficulty
-        if reward is not None:
+        if reward is not None and reward != "":
             self.reward = reward
-        if description is not None:
+        if description is not None and description != "":
             self.description = description
 
     def correlate_task(self, child) -> None:
@@ -48,9 +48,10 @@ class Task:
 
     def get_task_info(self) -> str:
         """Return a formatted string containing task information."""
-        return (
-            f'Task: {self.name}, '
-            f'Period: {self.period}, '
-            f'Frequency: {self.frequency}, '
-            f'Description: {self.description}'
-        )
+        return f"Task information:\n\
+                Task name: {self.name}\n\
+                Period: {self.period}\n\
+                Frequency: {self.frequency}\n\
+                Difficulty: {self.difficulty}\n\
+                Reward: {self.reward}\n\
+                Description: {self.description}\n"
