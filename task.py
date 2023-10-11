@@ -1,4 +1,5 @@
 from exceptions import InvalidTaskDataError, TaskNotFoundError
+tasks_list = []
 
 class Task:
     def __init__(self, name: str, period: str, frequency: str,
@@ -45,6 +46,29 @@ class Task:
         else:
             print(f'Task "{task_name}" not found for child {child.name}.')
             return False
+        
+    def task_search(self):
+        i = 0
+        for task in tasks_list:
+            print(f'{i+1}. {task.name}')
+            i += 1
+        task_search = int(input("Task number: "))
+        try:
+            print("If you don't want to change a field, leave it blank.")
+            task = tasks_list[task_search - 1]
+            task.edit_task(
+        input("New task name: "),
+        input("New task period: "),
+        input("New task frequency: "),
+        input("New task difficulty: "),
+        input("New task reward: "),
+        input("New task description: ")
+            )
+            print("Task edited successfully.")
+        except IndexError:
+            print("Error: Task not found.")
+        except TaskNotFoundError as e:
+            print(f"Error: {e}")
 
     def get_task_info(self) -> str:
         """Return a formatted string containing task information."""

@@ -1,15 +1,14 @@
 from parent import Parent
 from child import Child
-from task import Task
 from exceptions import *
 from feeling import Feeling
+from task import Task, tasks_list
 
 parents_list = []
 children_list = []
-tasks_list = []
-i = 0
+
+
 def main():
-    global i
     while True:
         option = int(input(
             """
@@ -57,28 +56,11 @@ def main():
                 print(f"Error: Child not found - {e}")
             
         elif option == 4:
-            if len(tasks_list) > 1:
+            if len(tasks_list) >= 1:
                 print("Which task do you want to edit? ")
-                for task in tasks_list:
-                    print(f'{i+1}. {task.name}')
-                    i += 1
-                task_search = int(input("Task number: "))
-                try:
-                    print("If you don't want to change a field, leave it blank.")
-                    task = tasks_list[task_search - 1]
-                    task.edit_task(
-                input("New task name: "),
-                input("New task period: "),
-                input("New task frequency: "),
-                input("New task difficulty: "),
-                input("New task reward: "),
-                input("New task description: ")
-                    )
-                    print("Task edited successfully.")
-                except IndexError:
-                    print("Error: Task not found.")
-                except TaskNotFoundError as e:
-                    print(f"Error: {e}")
+                task.task_search()
+            else:
+                task.task_search()
         elif option == 5:
             ... # delete task
         elif option == 6: # show all data
