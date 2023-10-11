@@ -3,8 +3,7 @@ learning/generate_pw.py
 learning/sandbox.py
 learning/test
 learning/validations.py
-.gitignore
 .idea/
 
 progress.txt
-.gitignore
+
