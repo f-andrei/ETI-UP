@@ -13,15 +13,17 @@ def main():
     while True:
         option = int(input(
             """
-                Selecione a opção desejada:\n
-                1. Cadastrar pai\n
-                2. Adicionar filho\n
-                3. Criar tarefa\n
-                4. Editar tarefa\n
-                5. Deletar tarefa\n
-                6. Exibir todos os dados cadastrados.\n
-                7. Finalizar programa.\n
-            """
+                Please choose an option:
+                1. Register Parent
+                2. Add Child
+                3. Create Task
+                4. Edit Task
+                5. Delete Task
+                6. Show All Registrations
+                7. Finish Program
+
+                Enter your choice: """
+            
         ))
         if option == 1:
             parent = Parent(
@@ -42,13 +44,13 @@ def main():
         elif option == 3:
             try:
                 task = (parent.create_task(
-                    child,
-                    input("Task name: "),
-                    input("Task period: "),
-                    input("Task frequency: "),
-                    input("Task difficulty: "),
-                    input("Task reward: "),
-                    input("Task description: ")
+                child,
+                input("Task name: "),
+                input("Task period: "),
+                input("Task frequency: "),
+                input("Task difficulty: "),
+                input("Task reward: "),
+                input("Task description: ")
             ))
                 tasks_list.append(task)
             except ChildNotFoundError as e:
@@ -65,12 +67,12 @@ def main():
                     print("If you don't want to change a field, leave it blank.")
                     task = tasks_list[task_search - 1]
                     task.edit_task(
-                        input("New task name: "),
-                        input("New task period: "),
-                        input("New task frequency: "),
-                        input("New task difficulty: "),
-                        input("New task reward: "),
-                        input("New task description: ")
+                input("New task name: "),
+                input("New task period: "),
+                input("New task frequency: "),
+                input("New task difficulty: "),
+                input("New task reward: "),
+                input("New task description: ")
                     )
                     print("Task edited successfully.")
                 except IndexError:
