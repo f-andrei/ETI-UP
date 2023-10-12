@@ -14,6 +14,7 @@ class Parent:
     def create_child(self, name: str, age: int, gender: str) -> Child:
         """Create a new child and add it to the parent's children list."""
         child = Child(name, age, gender, self)
+        child.parent = self
         self.children.append(child)
         return child
     
