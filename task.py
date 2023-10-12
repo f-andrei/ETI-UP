@@ -31,45 +31,30 @@ class Task:
             self.reward = reward
         if description is not None and description != "":
             self.description = description
+        return True
 
     def correlate_task(self, child) -> None:
         """Correlate the task with a child."""
         self.child = child
 
-    def delete_task(self, child, task_name: str) -> bool:
+    def delete_task(self) -> bool:
         """Delete a task by name."""
-        tasks_to_keep = [task for task in child.tasks if task.name != task_name]
-        if len(tasks_to_keep) < len(child.tasks):
-            child.tasks = tasks_to_keep
-            print(f'Task "{task_name}" deleted successfully.')
-            return True
-        else:
-            print(f'Task "{task_name}" not found for child {child.name}.')
-            return False
-        
-    def task_search(self):
         i = 0
         for task in tasks_list:
-            print(f'{i+1}. {task.name}')
+            print(f'{i + 1}. {task.name}')
             i += 1
-        task_search = int(input("Task number: "))
         try:
-            print("If you don't want to change a field, leave it blank.")
-            task = tasks_list[task_search - 1]
-            task.edit_task(
-        input("New task name: "),
-        input("New task period: "),
-        input("New task frequency: "),
-        input("New task difficulty: "),
-        input("New task reward: "),
-        input("New task description: ")
-            )
-            print("Task edited successfully.")
-        except IndexError:
-            print("Error: Task not found.")
-        except TaskNotFoundError as e:
-            print(f"Error: {e}")
-
+            task_to_delete = int(input("Which task do you want to delete? ")) - 1
+            if 0 <= task_to_delete < len(tasks_list):
+                del tasks_list[task_to_delete]
+                return True
+            else:
+                print("Error: Invalid task number.")
+                return False
+        except ValueError:
+            print("Error: Invalid input. Please enter a valid task number.")
+            return False
+        
     def get_task_info(self) -> str:
         """Return a formatted string containing task information."""
         return f"Task information:\n\
