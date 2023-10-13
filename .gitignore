@@ -40,3 +40,14 @@ tests/test_task.py
 __pycache__/child.cpython-39.pyc
 __pycache__/parent.cpython-39.pyc
 .vscode/gfg.txt
+ignore/.vscode/settings.json
+ignore/__pycache__/child.cpython-39.pyc
+ignore/__pycache__/exceptions.cpython-39.pyc
+ignore/__pycache__/feeling.cpython-39.pyc
+ignore/__pycache__/main.cpython-39.pyc
+ignore/__pycache__/parent.cpython-39.pyc
+ignore/__pycache__/task.cpython-39.pyc
+ignore/__pycache__/test_child.cpython-39.pyc
+ignore/__pycache__/test_parent.cpython-39.pyc
+ignore/__pycache__/test_task.cpython-39.pyc
+ignore/__pycache__/utils.cpython-39.pyc
