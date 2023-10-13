@@ -37,3 +37,6 @@ tests/.coverage
 tests/test_child.py
 tests/test_parent.py
 tests/test_task.py
+__pycache__/child.cpython-39.pyc
+__pycache__/parent.cpython-39.pyc
+.vscode/gfg.txt
