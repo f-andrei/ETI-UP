@@ -1,2 +1,5 @@
 
-sandbox/
+testing/
+.idea/
+_pycache_/
+.vscode/
