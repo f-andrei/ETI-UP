@@ -33,3 +33,7 @@ learning/.idea/inspectionProfiles/Project_Default.xml
 .idea/idea/inspectionProfiles/Project_Default.xml
 .idea/inspectionProfiles/profiles_settings.xml
 .idea/inspectionProfiles/Project_Default.xml
+tests/.coverage
+tests/test_child.py
+tests/test_parent.py
+tests/test_task.py

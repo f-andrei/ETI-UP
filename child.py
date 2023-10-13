@@ -22,7 +22,8 @@ class Child:
             if task.name == task_name:
                 task.completed = True
                 return f'Task "{task.name}" completed successfully.'
-        return f'Task "{task_name}" not found for child {self.name}.'
+        raise TaskNotFoundError(f'Task "{task_name}" not found for child {self.name}.')
+            
 
 
     def add_feeling(self, feeling: Feeling) -> None:
@@ -32,12 +33,12 @@ class Child:
     def get_child_info(self) -> str:
         """Return a formatted string containing child's information."""
         parent_info = f'Parent: {self.parent.username}\n\
-                    Age: {self.parent.age}\n\
-                    Gender: {self.parent.gender}\n\
-                    E-mail: {self.parent.email}'
+            Age: {self.parent.age}\n\
+            Gender: {self.parent.gender}\n\
+            E-mail: {self.parent.email}'
         return f"Child info:\n\
-                Name: {self.name}\n\
-                Age: {self.age}\n\
-                Gender: {self.gender}\n\
-                {parent_info}\n"
+            Name: {self.name}\n\
+            Age: {self.age}\n\
+            Gender: {self.gender}\n\
+            {parent_info}"
 
