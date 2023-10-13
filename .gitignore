@@ -1,5 +1,7 @@
 
 testing/
+
+# ignore folders _pycache_, .idea, .vscode
+**/__pycache__/
 .idea/
-_pycache_/
 .vscode/
