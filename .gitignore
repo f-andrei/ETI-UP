@@ -1,10 +1,2 @@
 
-sandbox/tests/test_task.py
-sandbox/tests/test_parent.py
-sandbox/tests/test_child.py
-sandbox/tests/.coverage
-sandbox/learning/validations.py
-sandbox/learning/sandbox.py
-sandbox/learning/progress.txt
-sandbox/learning/generate_pw.py
-sandbox/learning/email.py
+sandbox/
