@@ -24,6 +24,7 @@ class Parent:
             raise ValueError("Invalid child data. Name, age, and gender are required, and age must be a positive integer.")
         
         child = Child(name, age, gender, self)
+        child.parent = self
         self.children.append(child)
         return child
     

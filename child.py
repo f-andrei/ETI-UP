@@ -4,11 +4,14 @@ from task import Task
 
 
 class Child:
+    child_counter = 1
     def __init__(self, name: str, age: int, gender: str, parent):
         self.name = name
         self.age = age
         self.gender = gender
         self.parent = parent
+        self.child_number = Child.child_counter
+        Child.child_counter += 1
         self.tasks: list[Task] = []
         self.feelings: list[Feeling] = []
 
