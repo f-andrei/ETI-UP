@@ -1,20 +1,8 @@
 
 testing/
 
-teste/.idea/idea/ETI-UP.iml
-teste/__pycache__/parent.cpython-39.pyc
-teste/__pycache__/test_child.cpython-39.pyc
-teste/__pycache__/feeling.cpython-39.pyc
-teste/__pycache__/task.cpython-39.pyc
-teste/__pycache__/main.cpython-39.pyc
-teste/__pycache__/exceptions.cpython-39.pyc
-teste/__pycache__/child.cpython-39.pyc
-teste/__pycache__/test_parent.cpython-39.pyc
-teste/.idea/idea/vcs.xml
-teste/.idea/idea/misc.xml
-teste/.idea/idea/inspectionProfiles/Project_Default.xml
-teste/.vscode/settings.json
-teste/.idea/idea/inspectionProfiles/profiles_settings.xml
-teste/__pycache__/test_task.cpython-39.pyc
-teste/__pycache__/utils.cpython-39.pyc
-teste/.idea/idea/modules.xml
+
+**/__pycache__/
+.idea/
+.vscode/
+
