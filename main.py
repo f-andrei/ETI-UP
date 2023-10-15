@@ -42,7 +42,7 @@ def edit_task():
         parent_index = int(input("Enter the parent number (starting from 1) to edit a task: ")) - 1
         if 0 <= parent_index < len(parents_list):
             parent = parents_list[parent_index]
-            print(f"Tasks created by {parent.username}'s children: ")
+            print(f"Tasks created by {parent.name}'s children: ")
 
             for idx, task in enumerate(tasks_list):
                 if task.child.parent == parent:
@@ -73,7 +73,7 @@ def delete_task():
         parent_index = int(input("Enter the parent number (starting from 1) to delete a task: ")) - 1
         if 0 <= parent_index < len(parents_list):
             parent = parents_list[parent_index]
-            print(f"Tasks created by {parent.username}'s children: ")
+            print(f"Tasks created by {parent.name}'s children: ")
 
             for idx, task in enumerate(tasks_list):
                 if task.child.parent == parent:
