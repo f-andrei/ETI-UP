@@ -1,6 +1,7 @@
 from exceptions import TaskNotFoundError
 from feeling import Feeling
 from task import Task
+from database.insert import save_child_to_database
 
 class Child:
     """
@@ -105,3 +106,6 @@ class Child:
             Age: {self.age}\n\
             Gender: {self.gender}\n\
             {parent_info}"
+    
+    def save_to_database(self):
+        save_child_to_database(self)

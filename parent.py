@@ -2,6 +2,7 @@ from child import Child
 from task import Task
 from exceptions import ChildNotFoundError, InvalidParentData, InvalidTaskDataError, InvalidEmail, InvalidName, InvalidPassword
 from validations import is_invalid_name, is_invalid_email, is_invalid_password, validate_task_data
+from database.insert import save_parent_to_database, save_child_to_database, save_task_to_database
 
 class Parent:
     def __init__(self, name: str, age: int, gender: str, email: str, password: str):
@@ -44,7 +45,7 @@ class Parent:
         if not is_invalid_email(email):
             self.email = email
 
-        if is_invalid_password(password): 
+        if not is_invalid_password(password): 
             self.password = password
 
         self.children: list[Child] = []
@@ -127,3 +128,6 @@ class Parent:
                 Gender: {self.gender}\n\
                 E-mail: {self.email}\n\
                 Children: {children_names}"
+    
+    def save_to_database(self):
+        save_parent_to_database(self)
