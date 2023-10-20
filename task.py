@@ -1,7 +1,5 @@
 from exceptions import InvalidTaskDataError, TaskNotFoundError
 from validations import validate_task_data
-from database.insert import save_task_to_database
-# from database.update import update_task_in_database
 tasks_list = []
 
 class Task:
@@ -156,9 +154,3 @@ class Task:
                 Difficulty: {self.difficulty}\n\
                 Reward: {self.reward}\n\
                 Description: {self.description}\n"
-    
-    def save_to_database(self):
-        # if self.id is None:
-        save_task_to_database(self)
-        # else:
-        #     update_task_in_database(self)

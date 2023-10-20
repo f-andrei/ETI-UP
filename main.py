@@ -1,7 +1,6 @@
 from parent import Parent
 from task import tasks_list
 
-
 parents_list = []
 children_list = []
 
@@ -15,7 +14,7 @@ def register_parent():
                 str(input("Password: "))
             )
     parents_list.append(parent)
-    parent.save_to_database()
+
 
 def add_child(parent):
     child = parent.create_child(
@@ -24,7 +23,7 @@ def add_child(parent):
                 input("Gender: ")
             )
     children_list.append(child)
-    child.save_to_database()
+
 
 def create_task(parent, child, tasks_list):
     try:
@@ -33,7 +32,6 @@ def create_task(parent, child, tasks_list):
         task = parent.create_task(child, *values)  # This line was modified to use parent.create_task
         tasks_list.append(task)
         child.add_task(task)
-        task.save_to_database()
         print("Task created successfully.")
     except Exception as e:
         print(f"Error creating task: {e}")
@@ -121,7 +119,6 @@ def main():
         ))
         if option == 1:
             register_parent()
-            
         elif option == 2:
             if parents_list: 
                 parent_index = int(input("Enter the parent number to add child: ")) - 1
