@@ -1,9 +1,7 @@
 from exceptions import ChildNotFoundError, TaskNotFoundError
 from feeling import Feeling
-from task import Task
-from database.insert import save_child_to_database
-from database.select import get_child_info_by_parent_id, get_parent_id_by_email, get_parent_object
-
+from database.select import get_child_info_by_parent_id, get_parent_id_by_email, get_last_child_id
+from utils import get_child_index
 class Child:
     """
     Represents a child with tasks and feelings.
