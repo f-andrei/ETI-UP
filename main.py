@@ -1,157 +1,138 @@
 from parent import Parent
-from task import tasks_list
-
-
+from database.select import get_parent_id_by_email, get_child_info_by_parent_id, get_parent_object, get_child_id_by_parent_email, get_tasks_for_child_by_child_id, get_tasks_for_child
+from utils import get_child_index
+from database.update import update_task_in_database
+from database.delete import delete_task_from_database
+from validations import validate_task_data
 parents_list = []
 children_list = []
 
 
 def register_parent():
-    parent = Parent(
-                str(input("Name: ")),
-                int(input("Age: ")),
-                str(input("Gender: ")),
-                str(input("Email: ")),
-                str(input("Password: "))
-            )
-    parents_list.append(parent)
-    parent.save_to_database()
+    name = input("Name: ")
+    age = int(input("Age: "))
+    gender = input("Gender: ")
+    email = input("Email: ")
+    password = input("Password: ")
 
-def add_child(parent):
-    child = parent.create_child(
-                input("Name: "),
-                input("Age: "),
-                input("Gender: ")
-            )
-    children_list.append(child)
-    child.save_to_database()
+    parent_id = get_parent_id_by_email(email)
+    if parent_id:
+        print("Parent already exists with this email.")
+    else:
+        parent = Parent(name, age, gender, email, password, id=None)
+        parents_list.append(parent)
 
-def create_task(parent, child, tasks_list):
-    try:
-        attributes = ["name", "period", "frequency", "difficulty", "reward", "description"]
-        values = [input(f"Task {attr}: ") for attr in attributes]
-        task = parent.create_task(child, *values)  # This line was modified to use parent.create_task
-        tasks_list.append(task)
-        child.add_task(task)
-        task.save_to_database()
-        print("Task created successfully.")
-    except Exception as e:
-        print(f"Error creating task: {e}")
+def add_child():
+    parent_email = input("Parent's email: ")
+    parent_data = get_parent_object(parent_email)
+    
+    if parent_data:
+        existing_parent = Parent(*parent_data)
+        child_name = input("Child's Name: ")
+        child_age = int(input("Child's Age: "))
+        child_gender = input("Child's Gender: ")
 
+        try:
+            existing_parent.create_child(child_name, child_age, child_gender)
+            print(f"Child '{child_name}' successfully added to parent '{parent_email}'.")
+        except (ValueError) as e:
+            print(f"Error creating child: {e}")
+        
+        existing_parent.save_to_database()
+    else:
+        print("Parent not found.")
 
+def create_task():
+    parent_email = input("Parent's email: ")
+    parent_id = get_parent_id_by_email(parent_email)
+    parent_data = get_parent_object(parent_email)
+    child_object = get_child_info_by_parent_id(parent_id)
+    if child_object is None:
+        print("Child not found for the provided parent's email.")
+        return
+    if len(child_object) > 1:
+        selected_child, _ = get_child_index(child_object)
+        _, child_name, child_age, child_gender = child_object[selected_child]
+
+    if len(child_object) == 1:
+        _, child_name, child_age, child_gender = child_object[0]
+    
+    parent = Parent(*parent_data)
+    child = parent.create_child(child_name, child_age, child_gender)
+
+    attributes = ["name", "period", "frequency", "difficulty", "reward", "description"]
+    values = [input(f"Task {attr}: ") for attr in attributes]
+    parent.create_task(child, *values)
+    print("Task saved successfully.")
+    
 def edit_task():
     try:
-        parent_index = int(input("Enter the parent number (starting from 1) to edit a task: ")) - 1
-        if 0 <= parent_index < len(parents_list):
-            parent = parents_list[parent_index]
-            print(f"Tasks created by {parent.name}'s children: ")
+        parent_email = input("Parent's email: ")
+        child_id = get_child_id_by_parent_email(parent_email)
+        tasks = get_tasks_for_child_by_child_id(child_id)
+        print("Tasks created by the parent's children: ")
 
-            for idx, task in enumerate(tasks_list):
-                if task.child.parent == parent:
-                    print(f"{idx + 1}. {task.name} [{task.child.name}]")
+        for idx, task in enumerate(tasks):
+            print(f"{idx + 1}. {task['name']}")
 
-            task_index = int(input("Enter the task number you want to edit: ")) - 1
+        task_index = int(input("Enter the task number you want to edit: ")) - 1
 
-            if 0 <= task_index < len(tasks_list):
-                print("If you don't want to change a field, leave it blank.")
-                new_values = [
-                    input(f"New task {attr} (current: {getattr(tasks_list[task_index], attr)}): ")
-                    or getattr(tasks_list[task_index], attr) for attr in
-                    ["name", "period", "frequency", "difficulty", "reward", "description"]
-                ]
+        if 0 <= task_index < len(tasks):
+            task_id = tasks[task_index]['id']
+            existing_task = tasks[task_index]
+            print("If you don't want to change a field, leave it blank.")
 
-                tasks_list[task_index].edit_task(*new_values)
-                print("Task edited successfully.")
-            else:
-                print("Invalid task number.")
+            new_values = []
+            for attr in ["name", "period", "frequency", "difficulty", "reward", "description"]:
+                user_input = input(f"New task {attr} (current: {existing_task[attr]}): ")
+                new_values.append(user_input if user_input else existing_task[attr])
+
+            _, period, frequency, difficulty, _, _ = new_values
+            validate_task_data(period, frequency, difficulty)
+            update_task_in_database(task_id, *new_values, child_id)
+            
+
+            print("Task edited successfully.")
         else:
-            print("Invalid parent number.")
+            print("Invalid task number.")
     except ValueError:
         print("Invalid input. Please enter a number.")
-
 
 def delete_task():
-    try:
-        parent_index = int(input("Enter the parent number (starting from 1) to delete a task: ")) - 1
-        if 0 <= parent_index < len(parents_list):
-            parent = parents_list[parent_index]
-            print(f"Tasks created by {parent.name}'s children: ")
-
-            for idx, task in enumerate(tasks_list):
-                if task.child.parent == parent:
-                    print(f"{idx + 1}. {task.name} [{task.child.name}]")
-            task_index = int(input("Enter the task number to delete: ")) - 1
-
-            if 0 <= task_index < len(tasks_list):
-                task_to_delete = tasks_list.pop(task_index)
-                print(f"Task '{task_to_delete.name}' deleted successfully.")
-            else:
-                print("Invalid task number.")
+    parent_email = input("Parent's email: ")
+    child_id = get_child_id_by_parent_email(parent_email)
+    child_tasks = get_tasks_for_child_by_child_id(child_id)
+    if len(child_tasks) > 1:
+        print("Which task do you want to delete? ")
+        for idx, task in enumerate(child_tasks):
+            print(f"{idx + 1}. {task['name']}")
+        task_index = int(input("Task index: ")) - 1
+        delete_task_from_database(child_tasks[task_index]['id'])
+    else:
+        print(f"Task: {child_tasks[0]['name']} will be deleted.")
+        proceed = str(input("Do you want to delete? yes/no ")).strip().lower()
+        if proceed == 'yes':
+            task_index = 0
+            delete_task_from_database(child_tasks[task_index]['id'])
         else:
-            print("Invalid parent number.")
-    except ValueError:
-        print("Invalid input. Please enter a number.")
-
-
-def show_registrations():
-    print("Showing registrations.\n")
-    for parent in parents_list:
-        print(parent.get_parent_info())
-    for child in children_list:
-        print(child.get_child_info())
-    for task in tasks_list:
-        print(task.get_task_info())
+            print("You chose to not delete.")
 
 
 def main():
-    while True:
-        option = int(input(
-            """
-                Please choose an option:
-                1. Register Parent
-                2. Add Child
-                3. Create Task
-                4. Edit Task
-                5. Delete Task
-                6. Show All Registrations
-                7. Finish Program
-
-                Enter your choice: """
-            
-        ))
-        if option == 1:
-            register_parent()
-            
-        elif option == 2:
-            if parents_list: 
-                parent_index = int(input("Enter the parent number to add child: ")) - 1
-                if 0 <= parent_index < len(parents_list):
-                    add_child(parents_list[parent_index])
-                else:
-                    print("Invalid parent number.")
-            else:
-                print("No registered parents. Please register a parent first.")
-        elif option == 3:
-            if parents_list and children_list:
-                parent_index = int(input("Enter the parent number to assign the task: ")) - 1
-                child_index = int(input("Enter the child number to assign the task: ")) - 1
-                if 0 <= parent_index < len(parents_list) and 0 <= child_index < len(children_list):
-                    create_task(parents_list[parent_index], children_list[child_index], tasks_list)
-                else:
-                    print("Invalid parent or child number.")
-            else:
-                print("No registered parents or children. Please register a parent and a child first.")
-        elif option == 4:
-            edit_task()
-        elif option == 5:
-            delete_task()
-        elif option == 6:
-            show_registrations()
-        elif option == 7:
-            break
-        else:
-            print("Invalid option.")
-
+    print("parent")
+    # register_parent()
+    print("child")
+    # add_child()
+    
+   
+    
+    print("task")
+    # create_task()
+    
+    
+    
+    edit_task()
+    delete_task()
 
 if __name__ == "__main__":
     main()
