@@ -1,3 +1,6 @@
+class ParentNotFoundError(Exception):
+    """Raised when a child is not found in the database."""
+
 class ChildNotFoundError(Exception):
     """Raised when a child is not found."""
     pass
