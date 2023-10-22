@@ -1,24 +1,24 @@
 from child import Child
 from task import Task
-from exceptions import ChildNotFoundError, InvalidParentData, InvalidTaskDataError, InvalidEmail, InvalidName, InvalidPassword
-from validations import is_invalid_name, is_invalid_email, is_invalid_password, validate_task_data
-from database.insert import save_parent_to_database, save_child_to_database, save_task_to_database
-
+from exceptions import ParentNotFoundError, ChildNotFoundError, InvalidParentData, InvalidTaskDataError, InvalidEmail, InvalidName, InvalidPassword
+from validations import is_invalid_name, validate_task_data
+from database.insert import save_parent_to_database, save_child_to_database
+from database.select import get_parent_by_email, get_parent_id_by_email, get_child_info_by_parent_id
 class Parent:
-    def __init__(self, name: str, age: int, gender: str, email: str, password: str):
+    def __init__(self, name=None, age=None, gender=None, email=None, password=None, id=None):
         """
         Initialize a Parent object.
 
         Args:
-            name (str): The name of the parent.
-            age (int): The age of the parent.
-            gender (str): The gender of the parent.
-            email (str): The email address of the parent.
-            password (str): The password for the parent's account.
+            name (str, optional): The name of the parent.
+            age (int, optional): The age of the parent.
+            gender (str, optional): The gender of the parent.
+            email (str, optional): The email address of the parent.
+            password (str, optional): The password for the parent's account.
+            id (int, optional): The ID of the parent in the database.
 
         Raises:
-            InvalidParentData: If any of the required fields are missing or empty.
-            ValueError: If the age input is not a positive integer.
+            InvalidParentData: If any of the required fields are missing or empty and no id is provided.
 
         Attributes:
             name (str): The name of the parent.
@@ -28,27 +28,36 @@ class Parent:
             password (str): The password for the parent's account.
             children (list): A list to store child objects associated with the parent.
         """
-        if not all([name, age > 0, gender, email, password]):
+        if id is None and not all([name, age, gender, email, password]):
             raise InvalidParentData("Parent data is incomplete.")
         
-        if not is_invalid_name(name): 
+        if name:
             self.name = name.title()
+        else:
+            self.name = None
 
-        try:
-            age = int(age)
-        except ValueError:
-            raise ValueError("Invalid age input. Age must be a positive integer.")
-        self.age = age
+        if age:
+            try:
+                self.age = int(age)
+            except ValueError:
+                raise ValueError("Invalid age input. Age must be a positive integer.")
+        else:
+            self.age = None
 
-        self.gender = gender.title()
+        if gender:
+            self.gender = gender.title()
+        else:
+            self.gender = None
 
-        if not is_invalid_email(email):
-            self.email = email
+        self.email = email
+        self.password = password
+        if id is None:
+            self.id = None
+        else:
+            self.id = id
+        self.children = []
 
-        if not is_invalid_password(password): 
-            self.password = password
-
-        self.children: list[Child] = []
+        self.save_to_database()
 
     def create_child(self, name: str, age: int, gender: str) -> Child:
         """
@@ -78,7 +87,15 @@ class Parent:
        
         child = Child(name, age, gender, self)
         child.parent = self
+
+        child_object = get_child_info_by_parent_id(self.id)
+        if any(self._is_same_child(child, db_child) for db_child in child_object):
+            print("Child already exists in database.")
+        else:
+            save_child_to_database(child, self.id)
+            print("Child added to database.")
         self.children.append(child)
+        child.parent_id = self.id
         return child
     
     def create_task(self, child: Child, name: str, period: str, frequency: str,
@@ -87,7 +104,7 @@ class Parent:
         Create a task for the given child.
 
         Args:
-            child (Child): The Child object for whom the task is created.
+            child_name (str): The name of the child for whom the task is created.
             name (str): The name of the task.
             period (str): The period of the task (e.g., morning, afternoon).
             frequency (str): The frequency of the task (e.g., daily, weekly).
@@ -102,32 +119,30 @@ class Parent:
             ChildNotFoundError: If the specified child is not found in the parent's children list.
             InvalidTaskDataError: If any of the task data is invalid.
         """
-        if child not in self.children:
-            raise ChildNotFoundError("Child not found.")
+
+        # if child not in self.children:
+        #     raise ChildNotFoundError("Child not found.")
         
         try:
             validate_task_data(period, frequency, difficulty)
         except InvalidTaskDataError as e:
             raise InvalidTaskDataError(str(e))
         
-        task = Task(name, period, frequency, difficulty, reward, description, child)
-        child.add_task(task)
+        task = Task(name, period, frequency, difficulty, reward, description, child, child.child_id)
         return task
-    
-    def get_parent_info(self) -> str:
-        """
-        Get a formatted string containing parent's information.
-
-        Returns:
-            str: A formatted string containing parent's information.
-        """
-        children_names = ", ".join(child.name for child in self.children)
-        return f"Parent's info:\n\
-                Name: {self.name.title()}\n\
-                Age: {self.age}\n\
-                Gender: {self.gender}\n\
-                E-mail: {self.email}\n\
-                Children: {children_names}"
-    
+        
     def save_to_database(self):
-        save_parent_to_database(self)
+        """Check if the parent's object already exists in db, if not it saves it"""
+        existing_parent_email = get_parent_by_email(self.email)
+        if existing_parent_email:
+            existing_parent_id = get_parent_id_by_email(self.email)
+            self.id = existing_parent_id
+        else:
+            save_parent_to_database(self)
+            print("Parent added to database.")
+
+    def _is_same_child(self, new_child: str, db_child: str) -> bool:
+        """Compare child in current parent object to all children related to them"""
+        return (new_child.name == db_child[1] and
+                new_child.age == db_child[2] and
+                new_child.gender == db_child[3])
