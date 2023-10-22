@@ -26,7 +26,7 @@ def save_child_to_database(child, parent_id):
     connection.commit()
     child.child_id = cursor.lastrowid
 
-def save_task_to_database(task, child_id):
+def save_task_to_database(task):
     cursor.execute("INSERT INTO tasks (name, period, frequency, difficulty, reward, description, child_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
                    (task.name, task.period, task.frequency, task.difficulty, task.reward, task.description, task.child_id))
     connection.commit()
