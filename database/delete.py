@@ -6,13 +6,14 @@ DB_DIR = 'database'
 DB_NAME = 'tamagochi.sqlite3'
 DB_FILE = ROOT_DIR / DB_DIR / DB_NAME
 
+TASK_TABLE = 'tasks'
+
 # Create a connection to the SQLite database
 def establish_connection():
     """Establish a connection to the SQLite database."""
     connection = sqlite3.connect(str(DB_FILE))
     return connection
 
-TASK_TABLE = 'tasks'
 
 def delete_task_from_database(task_id):
     connection = establish_connection()
