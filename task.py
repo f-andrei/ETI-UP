@@ -1,7 +1,8 @@
 from exceptions import InvalidTaskDataError, TaskNotFoundError
 from validations import validate_task_data
 from database.insert import save_task_to_database
-# from database.update import update_task_in_database
+from database.update import update_task_in_database
+from child import Child
 tasks_list = []
 
 class Task:
@@ -29,7 +30,7 @@ class Task:
     """
     
     def __init__(self, name: str, period: str, frequency: str,
-                 difficulty: str, reward: str, description: str, child):
+                 difficulty: str, reward: str, description: str, child: Child, child_id: int):
         """
         Initializes a Task object.
 
@@ -54,8 +55,11 @@ class Task:
         self.reward = reward
         self.description = description
         self.completed = False
+        self.child_id = child_id
         self.child = child
         self.correlation = None
+        
+        save_task_to_database(self, child_id)
 
     def edit_task(self, name=None, period=None, frequency=None, difficulty=None, reward=None, description=None,
                   child=None):
@@ -75,15 +79,12 @@ class Task:
             self.name = name.strip()
 
         if period is not None:
-            validate_task_data(period, self.frequency, self.difficulty)
             self.period = period
 
         if frequency is not None:
-            validate_task_data(self.period, frequency, self.difficulty)
             self.frequency = frequency
 
         if difficulty is not None:
-            validate_task_data(self.period, self.frequency, difficulty)
             self.difficulty = difficulty
 
         if reward is not None:
@@ -94,6 +95,13 @@ class Task:
 
         if child is not None:
             self.child = child
+
+        try:
+            validate_task_data(period, frequency, difficulty)
+        except InvalidTaskDataError as e:
+            raise InvalidTaskDataError(str(e))
+        
+        update_task_in_database(self)
 
     def correlate_task(self, child) -> None:
         """
@@ -117,48 +125,4 @@ class Task:
         Raises:
             IndexError: If the specified task index is out of range.
         """
-        if task_index < 0 or task_index >= len(tasks_list):
-            raise IndexError("Invalid task number.")
-        deleted_task = tasks_list.pop(task_index)
-        return True, deleted_task
-
-    @staticmethod
-    def get_task_by_name(name):
-        """
-        Retrieves a task by its name from the tasks list.
-
-        Args:
-            name (str): The name of the task to be retrieved.
-
-        Returns:
-            Task: The Task object with the specified name.
-
-        Raises:
-            TaskNotFoundError: If the specified task is not found in the tasks list.
-        """
-        for task in tasks_list:
-            if task.name == name:
-                return task
-        raise TaskNotFoundError(f"Task '{name}' not found")
-
-    def get_task_info(self) -> str:
-        """
-        Returns a formatted string containing task information.
-
-        Returns:
-            str: A formatted string containing task information.
-        """
-        return f"Task information:\n\
-                Child: {self.child.name}\n\
-                Task name: {self.name}\n\
-                Period: {self.period}\n\
-                Frequency: {self.frequency}\n\
-                Difficulty: {self.difficulty}\n\
-                Reward: {self.reward}\n\
-                Description: {self.description}\n"
-    
-    def save_to_database(self):
-        # if self.id is None:
-        save_task_to_database(self)
-        # else:
-        #     update_task_in_database(self)
+        ...
