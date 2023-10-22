@@ -1,9 +1,10 @@
 import sqlite3
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent
+ROOT_DIR = Path(__file__).parent.parent
+DB_DIR = 'database'
 DB_NAME = 'tamagochi.sqlite3'
-DB_FILE = ROOT_DIR / DB_NAME
+DB_FILE = ROOT_DIR / DB_DIR / DB_NAME
 
 TASK_TABLE = 'tasks'
 
@@ -12,21 +13,14 @@ def establish_connection():
     connection = sqlite3.connect(str(DB_FILE))
     return connection
 
-def update_task_in_database(task):
-    """
-    Update task data in the database.
-
-    Args:
-        task (Task): The Task object with updated data.
-    """
+def update_task_in_database(name, period, frequency, difficulty, reward, description, child_id):
     connection = establish_connection()
     try:
         cursor = connection.cursor()
         cursor.execute(
             f'UPDATE {TASK_TABLE} SET name=?, period=?, frequency=?, difficulty=?, '
-            'reward=?, description=? WHERE id=?',
-            (task.name, task.period, task.frequency, task.difficulty, task.reward, 
-             task.description, task.id)
+            'reward=?, description=? WHERE child_id=?',
+            (name, period, frequency, difficulty, reward, description, child_id)
         )
         connection.commit()
     finally:
