@@ -1,9 +1,11 @@
+
 import sqlite3
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent
+ROOT_DIR = Path(__file__).parent.parent
+DB_DIR = 'database'
 DB_NAME = 'tamagochi.sqlite3'
-DB_FILE = ROOT_DIR / DB_NAME
+DB_FILE = ROOT_DIR / DB_DIR / DB_NAME
 
 PARENT_TABLE = 'parents'
 CHILD_TABLE = 'children'
