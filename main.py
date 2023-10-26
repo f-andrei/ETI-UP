@@ -51,11 +51,12 @@ def create_task():
         print("Child not found for the provided parent's email.")
         return
     if len(child_object) > 1:
-        selected_child, _ = get_child_index(child_object)
-        _, child_name, child_age, child_gender = child_object[selected_child]
+        child_index, _ = get_child_index(child_object, allow_selection=False)
+        print(child_index)
+        _, child_name, child_age, child_gender = child_object[child_index]
 
     if len(child_object) == 1:
-        _, child_name, child_age, child_gender = child_object[0]
+        _, child_name, child_age, child_gender = child_object[child_index]
     
     parent = Parent(*parent_data)
     child = parent.create_child(child_name, child_age, child_gender)
@@ -70,13 +71,19 @@ def edit_task():
         parent_email = input("Parent's email: ")
         child_id = get_child_id_by_parent_email(parent_email)
         tasks = get_tasks_for_child_by_child_id(child_id)
-        print("Tasks created by the parent's children: ")
 
-        for idx, task in enumerate(tasks):
-            print(f"{idx + 1}. {task['name']}")
+        if len(tasks) > 1:
+            print("Tasks created by the parent's children: ")
+            for idx, task in enumerate(tasks):
+                print(f"{idx + 1}. {task['name']}")
+            task_index = int(input("Enter the task number you want to edit: ")) - 1
+        elif len(tasks) == 1:
+            print(f"Editing task '{tasks[0]['name']}'")
+            task_index = 0
+        else:
+            print("Selected child doesn't have any tasks.")
 
-        task_index = int(input("Enter the task number you want to edit: ")) - 1
-
+        # if child doesnt have any tasks the program will break
         if 0 <= task_index < len(tasks):
             task_id = tasks[task_index]['id']
             existing_task = tasks[task_index]
@@ -98,6 +105,8 @@ def edit_task():
     except ValueError:
         print("Invalid input. Please enter a number.")
 
+
+# if there are no tasks assigned to selected child the program will break
 def delete_task():
     parent_email = input("Parent's email: ")
     child_id = get_child_id_by_parent_email(parent_email)
@@ -119,9 +128,11 @@ def delete_task():
 
 
 def main():
-    print("parent")
+    # print("parent")
     # register_parent()
-    print("child")
+    # print("child")
+    # add_child()
+    # print("child")
     # add_child()
     
    
@@ -131,7 +142,7 @@ def main():
     
     
     
-    edit_task()
+    # edit_task()
     delete_task()
 
 if __name__ == "__main__":
