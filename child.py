@@ -48,21 +48,17 @@ class Child:
         self.gender = gender.title()
         self.parent = parent
         self.feelings: list[Feeling] = []
-
+        
         parent_id = get_parent_id_by_email(self.parent.email)
-        child_info = get_child_info_by_parent_id(parent_id)
-
-        selected_child, _ = get_child_index(child_info)
-        if len(child_info) > 1:
-            self.child_id = child_info[selected_child][0]
+        child_data = get_child_info_by_parent_id(parent_id)
+        
+        
+        if len(child_data) > 1:
+            selected_child, _ = get_child_index(child_data, allow_selection=True)
+            self.child_id = child_data[selected_child][0]
         else:
             last_id = get_last_child_id(parent_id)
-
-        # child_data = get_parent_object(self.parent.email)
-        # if child_data:
-        #     self.id = child_data[0]
-        # else:
-        #     raise ChildNotFoundError("Child not found in the database.")
+            self.child_id = last_id
 
 
     def complete_task(self, task_name: str) -> str:
