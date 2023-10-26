@@ -1,10 +1,11 @@
-def get_child_index(child_info):
-    if len(child_info) > 1:
-        for index, child in enumerate(child_info):
+def get_child_index(child_data, allow_selection=False):
+    if len(child_data) > 1 and allow_selection:
+        for index, child in enumerate(child_data):
             print(f"{index + 1}: {child[1]}")
-        selected_child = int(input("Select a child to assign the task: "))
-        child_id = child_info[selected_child][0]
+        child_index = int(input("Select a child to assign the task: ")) - 1
+        child_id = child_data[child_index][0]
     else:
-        selected_child = 0
-        child_index = child_info
-    return selected_child, child_index
+        child_index = 0
+        print(child_data)
+        child_id = child_data[0][0]
+    return child_index, child_id
