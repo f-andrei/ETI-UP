@@ -75,6 +75,7 @@ class Parent:
             ValueError: If any of the required child data is missing or invalid.
             InvalidName: If the child's name is not valid.
         """
+        # Validate child parameters
         if not name or not gender or int(age) <= 0:
             raise ValueError("Invalid child data. Name, age, and gender are required, and age must be a positive integer.")
         try:
@@ -85,15 +86,19 @@ class Parent:
         if is_invalid_name(name):
             raise InvalidName("Invalid name. First and last names must contain at least 3 letters and consist of letters, spaces, hyphens, or apostrophes. Accented characters are also allowed.")
        
+        # Create child object
         child = Child(name, age, gender, self)
         child.parent = self
 
+        # Tries to retrieve the same child from the database, if it already exists
+        # it won't be saved
         child_object = get_child_info_by_parent_id(self.id)
         if any(self._is_same_child(child, db_child) for db_child in child_object):
-            print("Child already exists in database.")
+            print("Child already exists.")
         else:
             save_child_to_database(child, self.id)
-            print("Child added to database.")
+            print("Child saved successfully.")
+
         self.children.append(child)
         child.parent_id = self.id
         return child
@@ -120,14 +125,12 @@ class Parent:
             InvalidTaskDataError: If any of the task data is invalid.
         """
 
-        # if child not in self.children:
-        #     raise ChildNotFoundError("Child not found.")
-        
         try:
             validate_task_data(period, frequency, difficulty)
         except InvalidTaskDataError as e:
             raise InvalidTaskDataError(str(e))
         
+        # Creates task object
         task = Task(name, period, frequency, difficulty, reward, description, child, child.child_id)
         return task
         
@@ -139,7 +142,6 @@ class Parent:
             self.id = existing_parent_id
         else:
             save_parent_to_database(self)
-            print("Parent added to database.")
 
     def _is_same_child(self, new_child: str, db_child: str) -> bool:
         """Compare child in current parent object to all children related to them"""
