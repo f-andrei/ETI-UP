@@ -11,15 +11,13 @@ class Child:
         age (int): The age of the child.
         gender (str): The gender of the child.
         parent (Parent): The parent object associated with the child.
-        child_number (int): A unique identifier for the child.
+        child_id (int): A unique identifier for the child.
         tasks (list): A list to store Task objects associated with the child.
         feelings (list): A list to store Feeling objects associated with the child.
 
     Methods:
-        add_task(task: Task) -> None: Adds a task to the child's task list.
         complete_task(task_name: str) -> str: Marks a task as completed by name.
         add_feeling(feeling: Feeling) -> None: Adds a feeling to the child's feelings list.
-        get_child_info() -> str: Returns a formatted string containing child's information.
     """
 
     child_counter = 1

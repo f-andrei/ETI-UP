@@ -50,8 +50,8 @@ def create_task():
     if child_object is None:
         print("Child not found for the provided parent's email.")
         return
+    child_index, _ = get_child_index(child_object, allow_selection=False)
     if len(child_object) > 1:
-        child_index, _ = get_child_index(child_object, allow_selection=False)
         print(child_index)
         _, child_name, child_age, child_gender = child_object[child_index]
 
@@ -71,7 +71,7 @@ def edit_task():
         parent_email = input("Parent's email: ")
         child_id = get_child_id_by_parent_email(parent_email)
         tasks = get_tasks_for_child_by_child_id(child_id)
-
+        task_index = 0
         if len(tasks) > 1:
             print("Tasks created by the parent's children: ")
             for idx, task in enumerate(tasks):
@@ -83,9 +83,8 @@ def edit_task():
         else:
             print("Selected child doesn't have any tasks.")
 
-        # if child doesnt have any tasks the program will break
+    
         if 0 <= task_index < len(tasks):
-            task_id = tasks[task_index]['id']
             existing_task = tasks[task_index]
             print("If you don't want to change a field, leave it blank.")
 
@@ -96,17 +95,14 @@ def edit_task():
 
             _, period, frequency, difficulty, _, _ = new_values
             validate_task_data(period, frequency, difficulty)
-            update_task_in_database(task_id, *new_values, child_id)
-            
-
+            update_task_in_database(*new_values, child_id)
             print("Task edited successfully.")
-        else:
-            print("Invalid task number.")
+        
     except ValueError:
         print("Invalid input. Please enter a number.")
 
 
-# if there are no tasks assigned to selected child the program will break
+
 def delete_task():
     parent_email = input("Parent's email: ")
     child_id = get_child_id_by_parent_email(parent_email)
@@ -117,7 +113,7 @@ def delete_task():
             print(f"{idx + 1}. {task['name']}")
         task_index = int(input("Task index: ")) - 1
         delete_task_from_database(child_tasks[task_index]['id'])
-    else:
+    elif len(child_tasks) == 1:
         print(f"Task: {child_tasks[0]['name']} will be deleted.")
         proceed = str(input("Do you want to delete? yes/no ")).strip().lower()
         if proceed == 'yes':
@@ -125,24 +121,27 @@ def delete_task():
             delete_task_from_database(child_tasks[task_index]['id'])
         else:
             print("You chose to not delete.")
+    else:
+        print("No tasks found for selected child.")
 
 
 def main():
-    # print("parent")
+    print("parent")
     # register_parent()
-    # print("child")
+    print("child")
     # add_child()
-    # print("child")
+    print("child")
     # add_child()
     
    
-    
     print("task")
-    # create_task()
+    create_task()
+    create_task()
     
     
-    
-    # edit_task()
+    print("edit task")
+    edit_task()
+    print("delete task")
     delete_task()
 
 if __name__ == "__main__":

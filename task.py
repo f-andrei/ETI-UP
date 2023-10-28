@@ -25,8 +25,6 @@ class Task:
                   child=None): Edits the task with the given data.
         correlate_task(child): Correlates the task with a child.
         delete_task(task_index: int) -> bool: Deletes a task by index from the tasks list.
-        get_task_by_name(name): Retrieves a task by its name from the tasks list.
-        get_task_info() -> str: Returns a formatted string containing task information.
     """
     
     def __init__(self, name: str, period: str, frequency: str,
@@ -42,6 +40,7 @@ class Task:
             reward (str): The reward associated with the task.
             description (str): Description of the task.
             child (Child): The Child object associated with the task.
+            child_id (int): The child id to be associated with the task.
 
         Raises:
             InvalidTaskDataError: If any of the required task data is missing or empty.
@@ -117,12 +116,9 @@ class Task:
         Deletes a task by index from the tasks list.
 
         Args:
-            task_index (int): The index of the task to be deleted.
+            task_index (int): Index of the task to be deleted.
 
         Returns:
-            bool: True if the task was successfully deleted, False otherwise.
-
-        Raises:
-            IndexError: If the specified task index is out of range.
+            bool: True if the task is successfully deleted, False otherwise.
         """
         ...

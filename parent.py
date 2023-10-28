@@ -5,6 +5,23 @@ from validations import is_invalid_name, validate_task_data
 from database.insert import save_parent_to_database, save_child_to_database
 from database.select import get_parent_by_email, get_parent_id_by_email, get_child_info_by_parent_id
 class Parent:
+    """
+    Represents a parent with children and tasks.
+
+    Attributes:
+        name (str): The name of the parent.
+        age (int): The age of the parent.
+        gender (str): The gender of the parent.
+        email (str): The email address of the parent.
+        password (str): The password for the parent's account.
+        id (int): The ID of the parent in the database.
+        children (list): A list to store child objects associated with the parent.
+
+    Methods:
+        create_child(name: str, age: int, gender: str) -> Child: Create a new child and add it to the parent's children list.
+        create_task(child: Child, name: str, period: str, frequency: str,
+                    difficulty: str, reward: str, description: str) -> Task: Create a task for the given child.
+    """
     def __init__(self, name=None, age=None, gender=None, email=None, password=None, id=None):
         """
         Initialize a Parent object.
@@ -19,14 +36,6 @@ class Parent:
 
         Raises:
             InvalidParentData: If any of the required fields are missing or empty and no id is provided.
-
-        Attributes:
-            name (str): The name of the parent.
-            age (int): The age of the parent.
-            gender (str): The gender of the parent.
-            email (str): The email address of the parent.
-            password (str): The password for the parent's account.
-            children (list): A list to store child objects associated with the parent.
         """
         if id is None and not all([name, age, gender, email, password]):
             raise InvalidParentData("Parent data is incomplete.")
@@ -94,7 +103,7 @@ class Parent:
         # it won't be saved
         child_object = get_child_info_by_parent_id(self.id)
         if any(self._is_same_child(child, db_child) for db_child in child_object):
-            print("Child already exists.")
+            print("Child found in db")
         else:
             save_child_to_database(child, self.id)
             print("Child saved successfully.")

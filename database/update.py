@@ -13,7 +13,8 @@ def establish_connection():
     connection = sqlite3.connect(str(DB_FILE))
     return connection
 
-def update_task_in_database(task_id, name, period, frequency, difficulty, reward, description, child_id):
+
+def update_task_in_database(name, period, frequency, difficulty, reward, description, child_id):
     connection = establish_connection()
     try:
         cursor = connection.cursor()
